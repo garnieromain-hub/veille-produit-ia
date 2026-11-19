@@ -118,7 +118,23 @@ def main():
     page = GABARIT.read_text(encoding="utf-8").replace("/*__DONNEES__*/{}", json_txt)
     SORTIE.parent.mkdir(exist_ok=True)
     SORTIE.write_text(page, encoding="utf-8")
-    print(f"{SORTIE.relative_to(RACINE)} : {len(articles)} articles, "
+
+    # Version autonome pour GitHub Pages : document HTML complet
+    # (l'artifact claude.ai ajoute lui-même doctype, charset et viewport).
+    site = SORTIE.parent / "site"
+    site.mkdir(exist_ok=True)
+    (site / "index.html").write_text(
+        '<!doctype html>\n<html lang="fr">\n<head>\n<meta charset="utf-8">\n'
+        '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
+        '<meta name="robots" content="noindex">\n'
+        "<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}"
+        "body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>\n"
+        "</head>\n<body>\n" + page + "\n</body>\n</html>\n",
+        encoding="utf-8",
+    )
+    (site / ".nojekyll").write_text("", encoding="utf-8")
+
+    print(f"{SORTIE.relative_to(RACINE)} et page/site/index.html : {len(articles)} articles, "
           f"{len(complementaires)} sources complémentaires, {len(notes)} notes")
 
 

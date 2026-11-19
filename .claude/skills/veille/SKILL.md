@@ -16,15 +16,13 @@ description: Lance la veille produit et IA à la demande. Sans argument, veille 
    nouvelles fiches sont dans `sources/` et que `liste-articles.md` a une
    ligne par nouvelle fiche et une date « Dernière veille » à jour. Corriger
    l'index si une ligne manque.
-4. Mettre à jour la page web : `python3 outils/generer_page.py`, puis
-   republier `page/veille.html` sur l'URL indiquée dans `CLAUDE.md`
-   (section « Page web ») avec l'outil Artifact : `read` sur l'URL, puis
-   `publish` avec `url` et `file_path`.
+4. Vérifier que la page se génère sans erreur : `python3 outils/generer_page.py`.
+   La publication est automatique au push (GitHub Pages, voir `CLAUDE.md`).
 5. Enregistrer dans le dépôt : `git add -A`, commit « Veille du AAAA-MM-JJ »,
    puis `git push`.
 6. Rendre à Romain :
    - « En une phrase » de la note ;
-   - le lien vers la page web ;
+   - le lien vers la page web (https://garnieromain-hub.github.io/veille-produit-ia/) ;
    - les nouveaux articles (titre lié à la fiche, axe, maturité), en liste ;
    - le nombre de sources complémentaires ajoutées ;
    - le chemin de la note ;

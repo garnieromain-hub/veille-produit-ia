@@ -39,7 +39,7 @@ mais un axe absent plusieurs semaines de suite mérite une recherche ciblée.
   avec son axe), plus les sources complémentaires repérées sans fiche.
   Tenu à jour à chaque fiche créée.
 - Page web de la veille : générée depuis `liste-articles.md`, `sources/` et
-  `notes/` par `outils/generer_page.py`, publiée en artifact (voir « Page web »).
+  `notes/` par `outils/generer_page.py`, publiée sur GitHub Pages (voir « Page web »).
 - `sources/` : une fiche par source analysée, nommée `AAAA-MM-JJ-slug.md`.
 - `notes/` : notes de veille compilées, nommées `AAAA-MM-JJ-theme.md`.
 
@@ -49,9 +49,9 @@ mais un axe absent plusieurs semaines de suite mérite une recherche ciblée.
 - Veille automatique : une routine cloud la lance chaque lundi à 7h (heure
   de Paris l'hiver, 8h l'été), même Mac éteint, et pousse les résultats sur
   GitHub (`garnieromain-hub/veille-produit-ia`, branche `main`).
-- Sur le Mac, la tâche locale « Veille du lundi » (9h) récupère ces résultats
-  (`git pull`) et republie la page web.
-- `/veille` la lance à la demande depuis le Mac.
+- La page web se met à jour toute seule à chaque push (voir « Page web ») :
+  aucun ordinateur n'est nécessaire.
+- `/veille` la lance à la demande depuis n'importe quel poste où le dépôt est cloné.
 
 ## Dépôt GitHub
 - Avant de travailler sur le Mac : `git pull`, pour récupérer la dernière veille.
@@ -60,12 +60,16 @@ mais un axe absent plusieurs semaines de suite mérite une recherche ciblée.
 - `page/` n'est pas versionné : la page se régénère avec `outils/generer_page.py`.
 
 ## Page web
-- URL : https://claude.ai/artifact/WhGdkNsbncWQyvsUb5Jw6g (privée).
-- Après toute veille ou toute fiche ajoutée : lancer
-  `python3 outils/generer_page.py`, puis republier `page/veille.html` sur cette
-  URL avec l'outil Artifact (action `read` sur l'URL d'abord si la session ne
-  l'a pas encore lue, puis `publish` avec `url` et `file_path`).
-- Ne pas modifier `page/veille.html` à la main : changer `outils/gabarit-page.html`.
+- URL : https://garnieromain-hub.github.io/veille-produit-ia/ (publique,
+  non indexée par les moteurs de recherche). Le dépôt est public lui aussi.
+- Publication automatique : à chaque push sur `main`, le workflow
+  `.github/workflows/page.yml` lance `outils/generer_page.py` et publie
+  `page/site/index.html` sur GitHub Pages. Il n'y a rien à faire à la main.
+- Pour voir la page en local : `python3 outils/generer_page.py`, puis ouvrir
+  `page/site/index.html`.
+- Ne pas modifier les fichiers de `page/` à la main : changer `outils/gabarit-page.html`.
+- L'ancienne page claude.ai (https://claude.ai/artifact/WhGdkNsbncWQyvsUb5Jw6g)
+  n'est plus mise à jour.
 
 ## Principes
 - Une source déjà analysée (même lien) n'est pas refichée : on la réutilise.
