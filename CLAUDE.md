@@ -53,6 +53,18 @@ mais un axe absent plusieurs semaines de suite mérite une recherche ciblée.
   aucun ordinateur n'est nécessaire.
 - `/veille` la lance à la demande depuis n'importe quel poste où le dépôt est cloné.
 
+## Synthèse d'un article à la demande
+Quand je demande une synthèse, une fiche ou « ce qu'il faut retenir » d'un
+article (lien ou document), sans autre précision :
+1. Appliquer le skill `fiche-source` (grille en cinq parties).
+2. Ajouter la ligne dans `liste-articles.md`.
+3. Commit « Fiche : <titre court> » et push directement sur `main`, sans me
+   demander confirmation et sans ouvrir de pull request : la page publique se
+   met à jour toute seule.
+4. Me répondre avec l'idée clé, ce qui est nouveau et le lien vers la page.
+Si la source est déjà fichée (même lien), ne rien créer et me renvoyer la fiche
+existante.
+
 ## Dépôt GitHub
 - Avant de travailler sur le Mac : `git pull`, pour récupérer la dernière veille.
 - Après toute modification (veille, fiche, note, liste) : commit puis `git push`,
