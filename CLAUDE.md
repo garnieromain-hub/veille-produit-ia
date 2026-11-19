@@ -46,7 +46,18 @@ mais un axe absent plusieurs semaines de suite mérite une recherche ciblée.
 ## Veille
 - Toute demande de veille (un thème, une période, la veille hebdo) est confiée
   à l'agent `veilleur`, pas faite en direct dans la conversation.
-- `/veille` la lance à la demande ; une tâche planifiée la lance chaque lundi à 8h.
+- Veille automatique : une routine cloud la lance chaque lundi à 7h (heure
+  de Paris l'hiver, 8h l'été), même Mac éteint, et pousse les résultats sur
+  GitHub (`garnieromain-hub/veille-produit-ia`, branche `main`).
+- Sur le Mac, la tâche locale « Veille du lundi » (9h) récupère ces résultats
+  (`git pull`) et republie la page web.
+- `/veille` la lance à la demande depuis le Mac.
+
+## Dépôt GitHub
+- Avant de travailler sur le Mac : `git pull`, pour récupérer la dernière veille.
+- Après toute modification (veille, fiche, note, liste) : commit puis `git push`,
+  pour que la routine cloud parte de la dernière version.
+- `page/` n'est pas versionné : la page se régénère avec `outils/generer_page.py`.
 
 ## Page web
 - URL : https://claude.ai/artifact/WhGdkNsbncWQyvsUb5Jw6g (privée).

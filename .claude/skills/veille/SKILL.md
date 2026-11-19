@@ -5,6 +5,7 @@ description: Lance la veille produit et IA à la demande. Sans argument, veille 
 
 # Lancer la veille
 
+0. Lancer `git pull` pour partir de la dernière veille (celle du cloud comprise).
 1. Lire la date « Dernière veille » en tête de `liste-articles.md`.
 2. Confier la veille à l'agent `veilleur` (outil Agent, `subagent_type: veilleur`),
    avec un brief qui dit :
@@ -19,7 +20,9 @@ description: Lance la veille produit et IA à la demande. Sans argument, veille 
    republier `page/veille.html` sur l'URL indiquée dans `CLAUDE.md`
    (section « Page web ») avec l'outil Artifact : `read` sur l'URL, puis
    `publish` avec `url` et `file_path`.
-5. Rendre à Romain :
+5. Enregistrer dans le dépôt : `git add -A`, commit « Veille du AAAA-MM-JJ »,
+   puis `git push`.
+6. Rendre à Romain :
    - « En une phrase » de la note ;
    - le lien vers la page web ;
    - les nouveaux articles (titre lié à la fiche, axe, maturité), en liste ;
