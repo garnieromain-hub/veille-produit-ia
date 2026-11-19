@@ -1,0 +1,336 @@
+<title>Veille de Romain</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap">
+<style>
+/* Layout : poste de lecture en deux volets — index filtrable à gauche, fiche à droite ; un volet à la fois sur téléphone. */
+:root {
+  --bg: #eef1f4;
+  --surface: #ffffff;
+  --ink: #18202b;
+  --muted: #5a6575;
+  --line: #d6dce4;
+  --accent: #1f5f8b;
+  --accent-soft: #e1edf6;
+  --ax-pm: #2f6fb0;
+  --ax-ia: #7a4bb5;
+  --ax-tr: #b5602a;
+  --ax-pf: #2d8a6a;
+  --ax-in: #a8336a;
+  --f-ui: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-read: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-data: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11161d; --surface: #19202a; --ink: #e4e9ef; --muted: #98a3b3; --line: #2c3542;
+    --accent: #7db8e3; --accent-soft: #1d2f3f;
+    --ax-pm: #7aaee6; --ax-ia: #b896e6; --ax-tr: #e49a66; --ax-pf: #6cc6a3; --ax-in: #e386b3;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11161d; --surface: #19202a; --ink: #e4e9ef; --muted: #98a3b3; --line: #2c3542;
+  --accent: #7db8e3; --accent-soft: #1d2f3f;
+  --ax-pm: #7aaee6; --ax-ia: #b896e6; --ax-tr: #e49a66; --ax-pf: #6cc6a3; --ax-in: #e386b3;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-ui); font-size: 15px; line-height: 1.45; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button { font: inherit; color: inherit; }
+
+header.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: var(--surface); border-bottom: 1px solid var(--line);
+  padding-block: 12px 0;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.brand { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; }
+.brand h1 { font-family: var(--f-read); font-size: 1.35rem; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
+.brand .meta { color: var(--muted); font-size: 0.85rem; }
+.brand .meta b { font-family: var(--f-data); font-weight: 500; color: var(--ink); }
+nav.tabs { display: flex; gap: 4px; margin-top: 10px; overflow-x: auto; }
+nav.tabs button {
+  border: 0; background: none; padding: 8px 12px 10px; cursor: pointer; color: var(--muted);
+  border-bottom: 2px solid transparent; white-space: nowrap; font-weight: 500;
+}
+nav.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+nav.tabs .n { font-family: var(--f-data); font-size: 0.8rem; margin-left: 4px; color: var(--muted); }
+
+main.layout {
+  display: grid; grid-template-columns: minmax(300px, 420px) minmax(0, 1fr); gap: 0;
+  max-width: 1400px; margin: 0 auto; min-height: calc(100vh - 110px);
+}
+.listpane { border-right: 1px solid var(--line); min-width: 0; }
+.filters {
+  display: flex; flex-direction: column; gap: 10px; padding-block: 14px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.filters input[type="search"] {
+  width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px;
+  background: var(--surface); color: var(--ink); font: inherit;
+}
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--surface);
+  border-radius: 999px; padding: 3px 10px; font-size: 0.8rem; cursor: pointer; color: var(--ink);
+}
+.chip .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c, var(--muted)); flex: none; }
+.chip[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); }
+.chip .n { font-family: var(--f-data); color: var(--muted); font-size: 0.75rem; }
+.chip:disabled { opacity: 0.45; cursor: default; }
+.count { font-size: 0.8rem; color: var(--muted); }
+
+ul.items { list-style: none; margin: 0; padding: 0; }
+ul.items li { border-bottom: 1px solid var(--line); }
+.item {
+  display: grid; gap: 4px; width: 100%; text-align: left; background: none; border: 0; cursor: pointer;
+  padding-block: 12px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: 16px;
+  border-left: 3px solid transparent;
+}
+.item:hover { background: var(--accent-soft); }
+.item[aria-current="true"] { background: var(--accent-soft); border-left-color: var(--accent); }
+.item .t { font-family: var(--f-read); font-weight: 600; font-size: 1.02rem; line-height: 1.3; text-wrap: balance; }
+.item .s { color: var(--muted); font-size: 0.82rem; }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.date { font-family: var(--f-data); font-size: 0.78rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.axe { display: inline-flex; align-items: center; gap: 5px; font-size: 0.75rem; font-weight: 600; color: var(--c); letter-spacing: 0.02em; }
+.axe::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: var(--c); }
+.axe.second { font-weight: 400; opacity: 0.85; }
+
+/* Maturité : trois états de remplissage d'une même jauge */
+.mat { display: inline-flex; align-items: center; gap: 5px; font-size: 0.75rem; color: var(--muted); }
+.mat i { display: inline-flex; gap: 2px; }
+.mat i span { width: 6px; height: 10px; border: 1px solid var(--muted); border-radius: 1px; }
+.mat i span.on { background: var(--muted); }
+
+.detail { min-width: 0; padding-block: 28px 64px; padding-left: clamp(16px, 4vw, 56px); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.detail article { max-width: 70ch; }
+.back { display: none; border: 0; background: none; color: var(--accent); padding: 0 0 14px; cursor: pointer; font-weight: 500; }
+.dhead { display: grid; gap: 10px; padding-bottom: 18px; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
+.dhead h2 { font-family: var(--f-read); font-size: clamp(1.5rem, 2.6vw, 2.1rem); line-height: 1.15; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+.dhead .by { color: var(--muted); }
+.dhead .out { font-weight: 600; text-decoration: none; }
+.dhead .out:hover { text-decoration: underline; }
+.kw { display: flex; flex-wrap: wrap; gap: 6px; }
+.kw span { font-size: 0.75rem; border: 1px solid var(--line); border-radius: 4px; padding: 1px 6px; color: var(--muted); }
+
+.md { font-family: var(--f-read); font-size: 1.06rem; line-height: 1.62; }
+.md h2 { font-family: var(--f-ui); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.09em; color: var(--accent); margin: 2.2em 0 0.6em; font-weight: 600; }
+.md h3 { font-family: var(--f-read); font-size: 1.15rem; margin: 1.6em 0 0.4em; }
+.md p, .md ul, .md ol { margin: 0 0 0.9em; }
+.md ul, .md ol { padding-left: 1.3em; }
+.md li { margin-bottom: 0.35em; }
+.md blockquote { margin: 1em 0; padding: 0.2em 0 0.2em 1em; border-left: 3px solid var(--accent); color: var(--muted); font-style: italic; }
+.md table { border-collapse: collapse; font-family: var(--f-ui); font-size: 0.88rem; }
+.md .tablewrap { overflow-x: auto; margin: 1em 0; }
+.md th, .md td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+.md code { font-family: var(--f-data); font-size: 0.88em; background: var(--accent-soft); padding: 1px 4px; border-radius: 3px; }
+
+.empty { color: var(--muted); max-width: 52ch; }
+.empty h2 { font-family: var(--f-read); color: var(--ink); font-size: 1.5rem; margin: 0 0 8px; }
+.axisgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; margin-top: 20px; }
+.axisgrid div { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; display: grid; gap: 2px; }
+.axisgrid b { font-family: var(--f-data); font-size: 1.4rem; font-weight: 500; color: var(--ink); }
+
+.comp { display: grid; gap: 4px; padding-block: 12px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: 16px; }
+.comp a.t { font-family: var(--f-read); font-weight: 600; font-size: 1.02rem; text-decoration: none; color: var(--ink); }
+.comp a.t:hover { color: var(--accent); text-decoration: underline; }
+.comp p { margin: 0; font-size: 0.9rem; }
+.none { padding: 24px 16px; color: var(--muted); }
+
+@media (max-width: 860px) {
+  main.layout { grid-template-columns: minmax(0, 1fr); }
+  .listpane { border-right: 0; }
+  main.layout.reading .listpane { display: none; }
+  main.layout:not(.reading) .detail { display: none; }
+  .back { display: inline-block; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .item, .chip { transition: background-color 120ms ease; }
+}
+</style>
+
+<header class="top">
+  <div class="brand">
+    <h1>Veille de Romain</h1>
+    <span class="meta">Produit, IA, transformation, portefeuille, investissement tech · dernière veille <b id="derniere"></b></span>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button role="tab" id="tab-articles" data-tab="articles">Articles fichés<span class="n" id="n-articles"></span></button>
+    <button role="tab" id="tab-complementaires" data-tab="complementaires">Sources complémentaires<span class="n" id="n-complementaires"></span></button>
+    <button role="tab" id="tab-notes" data-tab="notes">Notes de veille<span class="n" id="n-notes"></span></button>
+  </nav>
+</header>
+
+<main class="layout" id="layout">
+  <section class="listpane" aria-label="Liste">
+    <div class="filters" id="filters">
+      <input type="search" id="q" placeholder="Chercher un titre, un auteur, un mot-clé" aria-label="Recherche">
+      <div class="chips" id="axes" aria-label="Filtrer par axe"></div>
+      <div class="chips" id="mats" aria-label="Filtrer par maturité"></div>
+      <div class="count" id="count"></div>
+    </div>
+    <ul class="items" id="list"></ul>
+  </section>
+  <section class="detail" id="detail" aria-live="polite"></section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+<script id="donnees" type="application/json">/*__DONNEES__*/{}</script>
+<script>
+(function () {
+  var D = JSON.parse(document.getElementById("donnees").textContent);
+  var AXES = [
+    { nom: "Product management", c: "--ax-pm" },
+    { nom: "IA appliquée au produit", c: "--ax-ia" },
+    { nom: "Transformation des entreprises", c: "--ax-tr" },
+    { nom: "Portefeuille numérique", c: "--ax-pf" },
+    { nom: "Investissement tech", c: "--ax-in" }
+  ];
+  var MATS = ["Signal faible", "Tendance émergente", "Pratique établie"];
+  var st = { tab: "articles", axes: new Set(), mats: new Set(), q: "" };
+  try { var saved = JSON.parse(localStorage.getItem("veille-filtres") || "null"); if (saved) { st.axes = new Set(saved.axes || []); st.mats = new Set(saved.mats || []); } } catch (e) {}
+
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (ch) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]; }); }
+  function axeColor(nom) { var a = AXES.find(function (x) { return x.nom === nom; }); return a ? "var(" + a.c + ")" : "var(--muted)"; }
+  function axeTag(nom, second) { return nom ? '<span class="axe' + (second ? " second" : "") + '" style="--c:' + axeColor(nom) + '">' + esc(nom) + "</span>" : ""; }
+  function matTag(m) {
+    var i = MATS.indexOf(m); if (i < 0) return m ? '<span class="mat">' + esc(m) + "</span>" : "";
+    var bars = [0, 1, 2].map(function (k) { return '<span class="' + (k <= i ? "on" : "") + '"></span>'; }).join("");
+    return '<span class="mat" title="Maturité"><i aria-hidden="true">' + bars + "</i>" + esc(m) + "</span>";
+  }
+  function fmt(d) {
+    var m = /^(\d{4})-(\d{2})(?:-(\d{2}))?/.exec(d || ""); if (!m) return esc(d || "");
+    var mois = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."][+m[2] - 1];
+    return (m[3] ? +m[3] + " " : "") + mois + " " + m[1];
+  }
+  function save() { try { localStorage.setItem("veille-filtres", JSON.stringify({ axes: Array.from(st.axes), mats: Array.from(st.mats) })); } catch (e) {} }
+
+  $("derniere").textContent = fmt(D.derniereVeille);
+  $("n-articles").textContent = D.articles.length;
+  $("n-complementaires").textContent = D.complementaires.length;
+  $("n-notes").textContent = D.notes.length;
+
+  function pool() { return st.tab === "complementaires" ? D.complementaires : st.tab === "notes" ? D.notes : D.articles; }
+  function matchAxe(x) { return !st.axes.size || st.axes.has(x.axe) || st.axes.has(x.axe2); }
+  function matchMat(x) { return st.tab !== "articles" || !st.mats.size || st.mats.has(x.maturite); }
+  function matchQ(x) {
+    if (!st.q) return true;
+    var hay = [x.titre, x.auteur, x.media, x.apport, (x.motscles || []).join(" "), st.tab === "notes" ? x.md : ""].join(" ").toLowerCase();
+    return st.q.toLowerCase().split(/\s+/).every(function (w) { return hay.indexOf(w) >= 0; });
+  }
+
+  function renderFilters() {
+    var p = pool();
+    var showAxes = st.tab !== "notes";
+    $("axes").hidden = !showAxes; $("mats").hidden = st.tab !== "articles";
+    $("axes").innerHTML = AXES.map(function (a) {
+      var n = p.filter(function (x) { return (x.axe === a.nom || x.axe2 === a.nom) && matchMat(x) && matchQ(x); }).length;
+      var on = st.axes.has(a.nom);
+      return '<button class="chip" data-axe="' + esc(a.nom) + '" aria-pressed="' + on + '" style="--c:var(' + a.c + ')"' + (n || on ? "" : " disabled") + '><span class="dot"></span>' + esc(a.nom) + ' <span class="n">' + n + "</span></button>";
+    }).join("");
+    $("mats").innerHTML = MATS.map(function (m) {
+      var n = p.filter(function (x) { return x.maturite === m && matchAxe(x) && matchQ(x); }).length;
+      var on = st.mats.has(m);
+      return '<button class="chip" data-mat="' + esc(m) + '" aria-pressed="' + on + '"' + (n || on ? "" : " disabled") + ">" + matTag(m) + ' <span class="n">' + n + "</span></button>";
+    }).join("");
+  }
+
+  function renderList() {
+    var items = pool().filter(function (x) { return matchAxe(x) && matchMat(x) && matchQ(x); });
+    var cur = location.hash.slice(1);
+    $("count").textContent = items.length + " sur " + pool().length;
+    if (!items.length) { $("list").innerHTML = '<li class="none">Aucun résultat avec ces filtres.</li>'; return; }
+    if (st.tab === "complementaires") {
+      $("list").innerHTML = items.map(function (x) {
+        return '<li><div class="comp"><div class="row">' + axeTag(x.axe) + (x.axe2 ? axeTag(x.axe2, true) : "") + '<span class="date">' + fmt(x.publie) + "</span></div>" +
+          '<a class="t" href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.titre) + " ↗</a>" +
+          '<span class="s date">' + esc(x.media) + " · repérée lors de la veille du " + fmt(x.veille) + "</span>" +
+          "<p>" + esc(x.apport) + "</p></div></li>";
+      }).join("");
+      return;
+    }
+    $("list").innerHTML = items.map(function (x) {
+      var sub = st.tab === "notes"
+        ? '<span class="date">' + fmt(x.date) + "</span>"
+        : '<div class="row">' + axeTag(x.axe) + matTag(x.maturite) + "</div>" + '<span class="s">' + esc(x.auteur) + ' · <span class="date">' + fmt(x.publie) + "</span></span>";
+      return '<li><button class="item" data-id="' + esc(x.id) + '"' + (x.id === cur ? ' aria-current="true"' : "") + '><span class="t">' + esc(x.titre) + "</span>" + sub + "</button></li>";
+    }).join("");
+  }
+
+  function mdHtml(md) {
+    var html = window.marked ? marked.parse(md) : "<pre>" + esc(md) + "</pre>";
+    var box = document.createElement("div"); box.innerHTML = html;
+    box.querySelectorAll("table").forEach(function (t) { var w = document.createElement("div"); w.className = "tablewrap"; t.parentNode.insertBefore(w, t); w.appendChild(t); });
+    box.querySelectorAll("a[href]").forEach(function (a) {
+      var h = a.getAttribute("href");
+      var m = /(?:^|\/)(sources|notes)\/([^\/#?]+)\.md$/.exec(h) || /^([^\/#?:]+)\.md$/.exec(h);
+      if (m) { var slug = m.length === 3 ? m[2] : m[1]; var id = (m[1] === "notes" ? "note-" : "") + slug; a.setAttribute("href", "#" + id); }
+      else if (/^https?:/.test(h)) { a.target = "_blank"; a.rel = "noopener"; }
+    });
+    return box.innerHTML;
+  }
+
+  function overview() {
+    var counts = AXES.map(function (a) { return { a: a, n: D.articles.filter(function (x) { return x.axe === a.nom; }).length }; });
+    var last = D.notes[0];
+    return '<div class="empty"><h2>Choisis un article dans la liste</h2><p>' + D.articles.length + " articles fichés, " + D.complementaires.length + " sources complémentaires, " + D.notes.length + " notes de veille. Un clic sur un article ouvre sa synthèse : idée clé, ce qui est nouveau, résumé, citations et mots-clés.</p>" +
+      (last ? '<p>Dernière note : <a href="#' + esc(last.id) + '">' + esc(last.titre) + "</a></p>" : "") +
+      '<div class="axisgrid">' + counts.map(function (c) { return '<div><span class="axe" style="--c:var(' + c.a.c + ')">' + esc(c.a.nom) + "</span><b>" + c.n + "</b><span>articles en axe principal</span></div>"; }).join("") + "</div></div>";
+  }
+
+  function renderDetail() {
+    var id = location.hash.slice(1);
+    var a = D.articles.find(function (x) { return x.id === id; });
+    var n = !a && D.notes.find(function (x) { return x.id === id; });
+    var back = '<button class="back" id="back">← Retour à la liste</button>';
+    $("layout").classList.toggle("reading", !!(a || n));
+    if (a) {
+      $("detail").innerHTML = back + '<article><div class="dhead"><div class="row">' + axeTag(a.axe) + (a.axe2 ? axeTag(a.axe2, true) : "") + matTag(a.maturite) + "</div><h2>" + esc(a.titre) + '</h2><div class="by">' + esc(a.auteur) + ' · publié le <span class="date">' + fmt(a.publie) + '</span> · fiché le <span class="date">' + fmt(a.analyse) + "</span></div>" +
+        (a.url ? '<div><a class="out" href="' + esc(a.url) + '" target="_blank" rel="noopener">Lire la source ↗</a></div>' : "") +
+        '<div class="kw">' + a.motscles.map(function (k) { return "<span>" + esc(k) + "</span>"; }).join("") + "</div></div>" +
+        '<div class="md">' + mdHtml(a.md) + "</div></article>";
+    } else if (n) {
+      $("detail").innerHTML = back + '<article><div class="dhead"><span class="date">Note de veille · ' + fmt(n.date) + "</span><h2>" + esc(n.titre) + '</h2></div><div class="md">' + mdHtml(n.md) + "</div></article>";
+    } else {
+      $("detail").innerHTML = overview();
+    }
+    var b = $("back"); if (b) b.addEventListener("click", function () { history.pushState(null, "", location.pathname + location.search); onRoute(); });
+    $("detail").scrollTop = 0;
+    if (a || n) window.scrollTo(0, 0);
+  }
+
+  function setTab(t) {
+    st.tab = t;
+    document.querySelectorAll("nav.tabs button").forEach(function (b) { b.setAttribute("aria-selected", String(b.dataset.tab === t)); });
+    renderFilters(); renderList();
+  }
+  function onRoute() {
+    var id = location.hash.slice(1);
+    if (id.indexOf("note-") === 0 && st.tab !== "notes") setTab("notes");
+    else if (id && id.indexOf("note-") !== 0 && st.tab === "notes") setTab("articles");
+    else renderList();
+    renderDetail();
+  }
+
+  document.querySelector("nav.tabs").addEventListener("click", function (e) { var b = e.target.closest("button[data-tab]"); if (b) setTab(b.dataset.tab); });
+  $("filters").addEventListener("click", function (e) {
+    var b = e.target.closest("button.chip"); if (!b || b.disabled) return;
+    var set = b.dataset.axe ? st.axes : st.mats, v = b.dataset.axe || b.dataset.mat;
+    set.has(v) ? set.delete(v) : set.add(v); save(); renderFilters(); renderList();
+  });
+  $("q").addEventListener("input", function (e) { st.q = e.target.value.trim(); renderFilters(); renderList(); });
+  $("list").addEventListener("click", function (e) { var b = e.target.closest("button.item"); if (b) location.hash = b.dataset.id; });
+  window.addEventListener("hashchange", onRoute);
+
+  setTab(location.hash.indexOf("#note-") === 0 ? "notes" : "articles");
+  renderDetail();
+})();
+</script>
