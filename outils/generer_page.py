@@ -45,10 +45,21 @@ def tableaux(texte):
     return {k: v[1:] for k, v in sections.items()}
 
 
+def titre_md(md, defaut):
+    """Premier titre de niveau 1, où qu'il soit (une note peut commencer par « Fiches créées : N »)."""
+    for ligne in md.splitlines():
+        if ligne.startswith("# "):
+            return ligne[2:].strip()
+    return defaut
+
+
 def sans_titre(md):
+    """Retire le premier titre de niveau 1 (affiché à part dans la page)."""
     lignes = md.splitlines()
-    if lignes and lignes[0].startswith("# "):
-        lignes = lignes[1:]
+    for i, ligne in enumerate(lignes):
+        if ligne.startswith("# "):
+            del lignes[i]
+            break
     return "\n".join(lignes).strip()
 
 
@@ -100,11 +111,10 @@ def main():
     notes = []
     for f in sorted((RACINE / "notes").glob("*.md"), reverse=True):
         md = f.read_text(encoding="utf-8")
-        premiere = md.splitlines()[0] if md else f.stem
         notes.append({
             "id": "note-" + f.stem,
             "date": f.stem[:10],
-            "titre": premiere.lstrip("# ").strip(),
+            "titre": titre_md(md, f.stem),
             "md": sans_titre(md),
         })
 
