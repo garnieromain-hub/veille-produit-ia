@@ -97,18 +97,18 @@ ul.items li { border-bottom: 1px solid var(--line); }
 .item:hover { background: var(--accent-soft); }
 .item[aria-current="true"] { background: var(--accent-soft); border-left-color: var(--accent); }
 .item .t { font-family: var(--f-read); font-weight: 600; font-size: 1.02rem; line-height: 1.3; text-wrap: balance; }
-.item .s { color: var(--muted); font-size: 0.82rem; }
+.item .s { display: flex; flex-wrap: nowrap; align-items: center; gap: 10px; color: var(--muted); font-size: 0.8rem; min-width: 0; }
+.item .s > * { flex: none; }
+.item .s .src { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.item .s .axe { white-space: nowrap; }
+.item.lien .t { font-weight: 500; }
+.nofiche { font-size: 0.7rem; color: var(--muted); border: 1px dashed var(--line); border-radius: 3px; padding: 0 4px; }
 .row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
 .date { font-family: var(--f-data); font-size: 0.78rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 .axe { display: inline-flex; align-items: center; gap: 5px; font-size: 0.75rem; font-weight: 600; color: var(--c); letter-spacing: 0.02em; }
 .axe::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: var(--c); }
 .axe.second { font-weight: 400; opacity: 0.85; }
 
-/* Maturité : trois états de remplissage d'une même jauge */
-.mat { display: inline-flex; align-items: center; gap: 5px; font-size: 0.75rem; color: var(--muted); }
-.mat i { display: inline-flex; gap: 2px; }
-.mat i span { width: 6px; height: 10px; border: 1px solid var(--muted); border-radius: 1px; }
-.mat i span.on { background: var(--muted); }
 
 .detail { min-width: 0; padding-block: 28px 64px; padding-left: clamp(16px, 4vw, 56px); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 .detail article { max-width: 70ch; }
@@ -139,10 +139,6 @@ ul.items li { border-bottom: 1px solid var(--line); }
 .axisgrid div { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; display: grid; gap: 2px; }
 .axisgrid b { font-family: var(--f-data); font-size: 1.4rem; font-weight: 500; color: var(--ink); }
 
-.comp { display: grid; gap: 4px; padding-block: 12px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: 16px; }
-.comp a.t { font-family: var(--f-read); font-weight: 600; font-size: 1.02rem; text-decoration: none; color: var(--ink); }
-.comp a.t:hover { color: var(--accent); text-decoration: underline; }
-.comp p { margin: 0; font-size: 0.9rem; }
 .none { padding: 24px 16px; color: var(--muted); }
 
 @media (max-width: 860px) {
@@ -163,8 +159,8 @@ ul.items li { border-bottom: 1px solid var(--line); }
     <span class="meta">Produit, IA, transformation, portefeuille, investissement tech · dernière veille <b id="derniere"></b></span>
   </div>
   <nav class="tabs" role="tablist" aria-label="Sections">
-    <button role="tab" id="tab-articles" data-tab="articles">Articles fichés<span class="n" id="n-articles"></span></button>
-    <button role="tab" id="tab-complementaires" data-tab="complementaires">Sources complémentaires<span class="n" id="n-complementaires"></span></button>
+    <button role="tab" id="tab-derniere" data-tab="derniere">Dernière veille<span class="n" id="n-derniere"></span></button>
+    <button role="tab" id="tab-historique" data-tab="historique">Historique<span class="n" id="n-historique"></span></button>
     <button role="tab" id="tab-notes" data-tab="notes">Notes de veille<span class="n" id="n-notes"></span></button>
   </nav>
 </header>
@@ -194,20 +190,26 @@ ul.items li { border-bottom: 1px solid var(--line); }
     { nom: "Portefeuille numérique", c: "--ax-pf" },
     { nom: "Investissement tech", c: "--ax-in" }
   ];
-  var MATS = ["Signal faible", "Tendance émergente", "Pratique établie"];
   var LANGS = ["Français", "Anglais"];
-  var st = { tab: "articles", axes: new Set(), langs: new Set(), q: "" };
+
+  // Une seule liste : les articles fichés (avec synthèse) et les sources complémentaires (lien seul).
+  var TOUS = D.articles.map(function (a) {
+    return Object.assign({ fiche: true, quand: a.analyse }, a);
+  }).concat(D.complementaires.map(function (c, i) {
+    return Object.assign({ fiche: false, id: "lien-" + (i + 1), quand: c.veille, auteur: c.media, motscles: [] }, c);
+  }));
+  TOUS.sort(function (x, y) {
+    return (y.quand || "").localeCompare(x.quand || "") || (y.publie || "").localeCompare(x.publie || "") || (x.fiche === y.fiche ? 0 : x.fiche ? -1 : 1);
+  });
+  var DERNIERE = TOUS.filter(function (x) { return x.fiche ? x.quand >= D.derniereVeille : x.quand === D.derniereVeille; });
+
+  var st = { tab: "derniere", axes: new Set(), langs: new Set(), q: "" };
   try { var saved = JSON.parse(localStorage.getItem("veille-filtres") || "null"); if (saved) { st.axes = new Set(saved.axes || []); st.langs = new Set(saved.langs || []); } } catch (e) {}
 
   var $ = function (id) { return document.getElementById(id); };
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (ch) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]; }); }
   function axeColor(nom) { var a = AXES.find(function (x) { return x.nom === nom; }); return a ? "var(" + a.c + ")" : "var(--muted)"; }
   function axeTag(nom, second) { return nom ? '<span class="axe' + (second ? " second" : "") + '" style="--c:' + axeColor(nom) + '">' + esc(nom) + "</span>" : ""; }
-  function matTag(m) {
-    var i = MATS.indexOf(m); if (i < 0) return m ? '<span class="mat">' + esc(m) + "</span>" : "";
-    var bars = [0, 1, 2].map(function (k) { return '<span class="' + (k <= i ? "on" : "") + '"></span>'; }).join("");
-    return '<span class="mat" title="Maturité"><i aria-hidden="true">' + bars + "</i>" + esc(m) + "</span>";
-  }
   function langTag(l) { return l ? '<span class="lang" title="' + esc(l) + '">' + (l === "Français" ? "FR" : "EN") + "</span>" : ""; }
   function fmt(d) {
     var m = /^(\d{4})-(\d{2})(?:-(\d{2}))?/.exec(d || ""); if (!m) return esc(d || "");
@@ -217,23 +219,22 @@ ul.items li { border-bottom: 1px solid var(--line); }
   function save() { try { localStorage.setItem("veille-filtres", JSON.stringify({ axes: Array.from(st.axes), langs: Array.from(st.langs) })); } catch (e) {} }
 
   $("derniere").textContent = fmt(D.derniereVeille);
-  $("n-articles").textContent = D.articles.length;
-  $("n-complementaires").textContent = D.complementaires.length;
+  $("n-derniere").textContent = DERNIERE.length;
+  $("n-historique").textContent = TOUS.length;
   $("n-notes").textContent = D.notes.length;
 
-  function pool() { return st.tab === "complementaires" ? D.complementaires : st.tab === "notes" ? D.notes : D.articles; }
+  function pool() { return st.tab === "historique" ? TOUS : st.tab === "notes" ? D.notes : DERNIERE; }
   function matchAxe(x) { return !st.axes.size || st.axes.has(x.axe) || st.axes.has(x.axe2); }
   function matchLang(x) { return st.tab === "notes" || !st.langs.size || st.langs.has(x.langue); }
   function matchQ(x) {
     if (!st.q) return true;
-    var hay = [x.titre, x.auteur, x.media, x.apport, (x.motscles || []).join(" "), st.tab === "notes" ? x.md : ""].join(" ").toLowerCase();
+    var hay = [x.titre, x.auteur, x.apport, (x.motscles || []).join(" "), st.tab === "notes" ? x.md : ""].join(" ").toLowerCase();
     return st.q.toLowerCase().split(/\s+/).every(function (w) { return hay.indexOf(w) >= 0; });
   }
 
   function renderFilters() {
     var p = pool();
-    var showAxes = st.tab !== "notes";
-    $("axes").hidden = !showAxes; $("langs").hidden = st.tab === "notes";
+    $("axes").hidden = st.tab === "notes"; $("langs").hidden = st.tab === "notes";
     $("axes").innerHTML = AXES.map(function (a) {
       var n = p.filter(function (x) { return (x.axe === a.nom || x.axe2 === a.nom) && matchLang(x) && matchQ(x); }).length;
       var on = st.axes.has(a.nom);
@@ -249,22 +250,13 @@ ul.items li { border-bottom: 1px solid var(--line); }
   function renderList() {
     var items = pool().filter(function (x) { return matchAxe(x) && matchLang(x) && matchQ(x); });
     var cur = location.hash.slice(1);
-    $("count").textContent = items.length + " sur " + pool().length;
+    $("count").textContent = items.length + " sur " + pool().length + (st.tab === "derniere" ? " · veille du " + fmt(D.derniereVeille) : "");
     if (!items.length) { $("list").innerHTML = '<li class="none">Aucun résultat avec ces filtres.</li>'; return; }
-    if (st.tab === "complementaires") {
-      $("list").innerHTML = items.map(function (x) {
-        return '<li><div class="comp"><div class="row">' + axeTag(x.axe) + (x.axe2 ? axeTag(x.axe2, true) : "") + langTag(x.langue) + '<span class="date">' + fmt(x.publie) + "</span></div>" +
-          '<a class="t" href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.titre) + " ↗</a>" +
-          '<span class="s date">' + esc(x.media) + " · repérée lors de la veille du " + fmt(x.veille) + "</span>" +
-          "<p>" + esc(x.apport) + "</p></div></li>";
-      }).join("");
-      return;
-    }
     $("list").innerHTML = items.map(function (x) {
       var sub = st.tab === "notes"
         ? '<span class="date">' + fmt(x.date) + "</span>"
-        : '<div class="row">' + axeTag(x.axe) + matTag(x.maturite) + langTag(x.langue) + "</div>" + '<span class="s">' + esc(x.auteur) + ' · <span class="date">' + fmt(x.publie) + "</span></span>";
-      return '<li><button class="item" data-id="' + esc(x.id) + '"' + (x.id === cur ? ' aria-current="true"' : "") + '><span class="t">' + esc(x.titre) + "</span>" + sub + "</button></li>";
+        : axeTag(x.axe) + '<span class="src">' + esc(x.auteur) + "</span>" + '<span class="date">' + fmt(x.publie) + "</span>" + langTag(x.langue) + (x.fiche ? "" : '<span class="nofiche">sans fiche</span>');
+      return '<li><button class="item' + (x.fiche === false ? " lien" : "") + '" data-id="' + esc(x.id) + '"' + (x.id === cur ? ' aria-current="true"' : "") + '><span class="t">' + esc(x.titre) + '</span><span class="s">' + sub + "</span></button></li>";
     }).join("");
   }
 
@@ -282,31 +274,33 @@ ul.items li { border-bottom: 1px solid var(--line); }
   }
 
   function overview() {
-    var counts = AXES.map(function (a) { return { a: a, n: D.articles.filter(function (x) { return x.axe === a.nom; }).length }; });
+    var counts = AXES.map(function (a) { return { a: a, n: DERNIERE.filter(function (x) { return x.axe === a.nom; }).length }; });
     var last = D.notes[0];
-    return '<div class="empty"><h2>Choisis un article dans la liste</h2><p>' + D.articles.length + " articles fichés, " + D.complementaires.length + " sources complémentaires, " + D.notes.length + " notes de veille. Un clic sur un article ouvre sa synthèse : idée clé, ce qui est nouveau, résumé, citations et mots-clés.</p>" +
-      (last ? '<p>Dernière note : <a href="#' + esc(last.id) + '">' + esc(last.titre) + "</a></p>" : "") +
-      '<div class="axisgrid">' + counts.map(function (c) { return '<div><span class="axe" style="--c:var(' + c.a.c + ')">' + esc(c.a.nom) + "</span><b>" + c.n + "</b><span>articles en axe principal</span></div>"; }).join("") + "</div></div>";
+    var nf = DERNIERE.filter(function (x) { return x.fiche; }).length;
+    return '<div class="empty"><h2>Veille du ' + fmt(D.derniereVeille) + "</h2><p>" + nf + " articles fichés et " + (DERNIERE.length - nf) + " sources complémentaires. Un clic sur un article ouvre sa synthèse : idée clé, ce qui est nouveau, résumé, citations et mots-clés. L'onglet Historique rassemble les " + TOUS.length + " articles repérés depuis le début.</p>" +
+      (last ? '<p>Note de la veille : <a href="#' + esc(last.id) + '">' + esc(last.titre) + "</a></p>" : "") +
+      '<div class="axisgrid">' + counts.map(function (c) { return '<div><span class="axe" style="--c:var(' + c.a.c + ')">' + esc(c.a.nom) + "</span><b>" + c.n + "</b><span>articles dans cette veille</span></div>"; }).join("") + "</div></div>";
   }
 
   function renderDetail() {
     var id = location.hash.slice(1);
-    var a = D.articles.find(function (x) { return x.id === id; });
+    var a = TOUS.find(function (x) { return x.id === id; });
     var n = !a && D.notes.find(function (x) { return x.id === id; });
     var back = '<button class="back" id="back">← Retour à la liste</button>';
     $("layout").classList.toggle("reading", !!(a || n));
     if (a) {
-      $("detail").innerHTML = back + '<article><div class="dhead"><div class="row">' + axeTag(a.axe) + (a.axe2 ? axeTag(a.axe2, true) : "") + matTag(a.maturite) + "</div><h2>" + esc(a.titre) + '</h2><div class="by">' + esc(a.auteur) + ' · publié le <span class="date">' + fmt(a.publie) + '</span> · fiché le <span class="date">' + fmt(a.analyse) + "</span></div>" +
+      var head = '<div class="dhead"><div class="row">' + axeTag(a.axe) + (a.axe2 ? axeTag(a.axe2, true) : "") + langTag(a.langue) + (a.fiche ? "" : '<span class="nofiche">sans fiche</span>') + "</div><h2>" + esc(a.titre) + '</h2><div class="by">' + esc(a.auteur) + ' · publié le <span class="date">' + fmt(a.publie) + "</span> · " + (a.fiche ? "fiché" : "repéré") + ' le <span class="date">' + fmt(a.quand) + "</span></div>" +
         (a.url ? '<div><a class="out" href="' + esc(a.url) + '" target="_blank" rel="noopener">Lire la source ↗</a></div>' : "") +
-        '<div class="kw">' + a.motscles.map(function (k) { return "<span>" + esc(k) + "</span>"; }).join("") + "</div></div>" +
-        '<div class="md">' + mdHtml(a.md) + "</div></article>";
+        (a.motscles.length ? '<div class="kw">' + a.motscles.map(function (k) { return "<span>" + esc(k) + "</span>"; }).join("") + "</div>" : "") + "</div>";
+      var body = a.fiche ? '<div class="md">' + mdHtml(a.md) + "</div>"
+        : '<div class="md"><h2>Ce qu\'elle apporte</h2><p>' + esc(a.apport) + "</p><p><em>Source repérée lors d'une veille mais pas encore fichée : demande sa synthèse pour l'ajouter.</em></p></div>";
+      $("detail").innerHTML = back + "<article>" + head + body + "</article>";
     } else if (n) {
       $("detail").innerHTML = back + '<article><div class="dhead"><span class="date">Note de veille · ' + fmt(n.date) + "</span><h2>" + esc(n.titre) + '</h2></div><div class="md">' + mdHtml(n.md) + "</div></article>";
     } else {
       $("detail").innerHTML = overview();
     }
     var b = $("back"); if (b) b.addEventListener("click", function () { history.pushState(null, "", location.pathname + location.search); onRoute(); });
-    $("detail").scrollTop = 0;
     if (a || n) window.scrollTo(0, 0);
   }
 
@@ -315,11 +309,15 @@ ul.items li { border-bottom: 1px solid var(--line); }
     document.querySelectorAll("nav.tabs button").forEach(function (b) { b.setAttribute("aria-selected", String(b.dataset.tab === t)); });
     renderFilters(); renderList();
   }
+  function tabFor(id) {
+    if (!id) return st.tab;
+    if (id.indexOf("note-") === 0) return "notes";
+    if (st.tab !== "notes" && pool().some(function (x) { return x.id === id; })) return st.tab;
+    return DERNIERE.some(function (x) { return x.id === id; }) ? "derniere" : "historique";
+  }
   function onRoute() {
-    var id = location.hash.slice(1);
-    if (id.indexOf("note-") === 0 && st.tab !== "notes") setTab("notes");
-    else if (id && id.indexOf("note-") !== 0 && st.tab === "notes") setTab("articles");
-    else renderList();
+    var t = tabFor(location.hash.slice(1));
+    if (t !== st.tab) setTab(t); else renderList();
     renderDetail();
   }
 
@@ -333,7 +331,7 @@ ul.items li { border-bottom: 1px solid var(--line); }
   $("list").addEventListener("click", function (e) { var b = e.target.closest("button.item"); if (b) location.hash = b.dataset.id; });
   window.addEventListener("hashchange", onRoute);
 
-  setTab(location.hash.indexOf("#note-") === 0 ? "notes" : "articles");
+  setTab(tabFor(location.hash.slice(1)) || "derniere");
   renderDetail();
 })();
 </script>
