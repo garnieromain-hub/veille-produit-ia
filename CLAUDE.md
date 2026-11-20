@@ -46,9 +46,14 @@ mais un axe absent plusieurs semaines de suite mérite une recherche ciblée.
 ## Veille
 - Toute demande de veille (un thème, une période, la veille hebdo) est confiée
   à l'agent `veilleur`, pas faite en direct dans la conversation.
-- Veille automatique : une routine cloud la lance chaque lundi à 7h (heure
-  de Paris l'hiver, 8h l'été), même Mac éteint, et pousse les résultats sur
-  GitHub (`garnieromain-hub/veille-produit-ia`, branche `main`).
+- Veille automatique quotidienne : une routine cloud la lance du lundi au
+  vendredi à 7h (heure de Paris l'hiver, 8h l'été), même Mac éteint, et pousse
+  les résultats sur GitHub (`garnieromain-hub/veille-produit-ia`, branche `main`).
+  Chaque jour : 20 articles, tous fichés, trois quarts en français. Le lundi
+  couvre le week-end.
+- Organisation de la veille quotidienne : l'agent `veilleur` sélectionne les
+  articles, quatre agents `ficheur` rédigent les fiches en parallèle, puis le
+  `veilleur` écrit une note courte du jour.
 - La page web se met à jour toute seule à chaque push (voir « Page web ») :
   aucun ordinateur n'est nécessaire.
 - `/veille` la lance à la demande depuis n'importe quel poste où le dépôt est cloné.

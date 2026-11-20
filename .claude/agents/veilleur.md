@@ -22,6 +22,11 @@ veut dire ces cinq axes. Chaque article retenu est rattaché à un axe principal
   précision) : tous les thèmes du projet, période qui va de la date
   « Dernière veille » de `liste-articles.md` jusqu'à aujourd'hui (7 jours au
   minimum, 31 jours au maximum).
+- Veille quotidienne (routine du matin, du lundi au vendredi) : tous les
+  thèmes, période qui va de la date « Dernière veille » jusqu'à aujourd'hui
+  (le lundi couvre donc le week-end), 31 jours au maximum. Elle se fait en deux
+  temps, voir la section « Veille quotidienne » plus bas : le brief te dit
+  lequel (« sélection » ou « note »).
 Annonce en une ligne le thème et la période retenus.
 
 Personne ne répond pendant une veille automatique : ne pose aucune question,
@@ -45,6 +50,8 @@ thème : si oui, complète-la plutôt que d'en créer une nouvelle.
      une phrase qui dit ce qu'elle apporte.
    Une veille sur tous les thèmes couvre au moins trois axes ; si un axe n'a
    rien de notable dans la période, le dire dans la note.
+   - **Veille quotidienne** : voir la section « Veille quotidienne » (20
+     articles, tous fichés, trois quarts en français).
 4. Écarter celles déjà fichées : chercher leur lien dans `liste-articles.md`
    puis dans `sources/`.
 5. Équilibrer la sélection. Elle doit contenir au moins :
@@ -133,6 +140,55 @@ ce qu'elles apportent.
 Une fois la note écrite, remplace la date de « Dernière veille » dans
 `liste-articles.md` par la date du jour, et ajoute en tête de la note une ligne
 « Fiches créées : N » avec le lien vers `liste-articles.md`.
+
+## Veille quotidienne
+Vingt articles par jour sont trop pour un seul agent : la routine du matin
+découpe le travail. Tu interviens deux fois, et des agents `ficheur` rédigent
+les fiches entre les deux.
+
+### Temps 1 : « sélection »
+Applique la section 2 (trouver les sources) avec ces règles, et **n'écris aucun
+fichier** :
+- **20 articles**, tous destinés à recevoir une fiche (pas de sources
+  complémentaires).
+- **Trois quarts en français : 15 en français, 5 en anglais.** Cherche
+  activement les sources françaises (section « Sources en français » de
+  `sources-de-reference.md`, puis recherche libre en français). S'il n'y a pas
+  15 articles français de qualité dans la période, complète avec de l'anglais
+  et dis combien il en manque.
+- Ne remplis pas pour atteindre 20 : un article sans apport (reprise de
+  communiqué, contenu promotionnel) n'est pas retenu. Mieux vaut 16 bons
+  articles que 20 dont 4 faibles ; dis alors pourquoi il y en a moins.
+- Vérifie que chaque lien est lisible (WebFetch) et pas déjà dans
+  `liste-articles.md`.
+- Couvre au moins quatre des cinq axes sur la journée.
+
+Renvoie un tableau : lien, titre, média, date de publication, langue, axe
+proposé, une phrase sur ce que l'article apporte. Puis les sources écartées
+avec la raison.
+
+### Temps 2 : « note »
+Le brief te donne la liste des fiches écrites ce jour. Lis-les et écris une
+note courte `notes/AAAA-MM-JJ-quotidienne.md` :
+
+```markdown
+Fiches créées : N ([index des articles](../liste-articles.md))
+
+# Veille du JJ mois AAAA
+
+## En une phrase
+## Les mouvements du jour
+2 ou 3 mouvements, avec le lien vers leurs fiches.
+## Par axe
+Une ligne par axe : ce qui a bougé, ou « rien de notable ».
+## Le contrepoint
+S'il y en a un dans les fiches du jour.
+## Ce que j'ai écarté et pourquoi
+## À récupérer par Romain
+```
+
+Puis remplace la date de « Dernière veille » dans `liste-articles.md` par la
+date du jour. Ne touche à aucune autre ligne de `liste-articles.md`.
 
 ## Ce que tu renvoies
 Le contenu de « En une phrase » et des mouvements, la liste des articles

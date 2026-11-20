@@ -69,3 +69,28 @@ Les sources marquées (EN) sont en anglais : les fiches restent en français.
 - Sifted — sifted.eu (EN) : écosystème européen
 - Maddyness — maddyness.com : levées françaises
 - CB Insights — cbinsights.com (EN) : rapports, souvent partiellement payants
+
+## Sources en français
+La veille quotidienne vise trois quarts d'articles en français : chercher ici en
+priorité, puis par recherche libre en français.
+### Produit, design, organisation
+- Blog OCTO — blog.octo.com : produit, IA, organisation (maison)
+- Thiga — thiga.co/blog : product management, design, transformation produit
+- School of Product — schoolofproduct.com : pratiques PM
+- Welcome to the Jungle, Welcome Tech — welcometothejungle.com : métiers produit et tech, emploi
+- Le Ticket — le-ticket.fr : retours d'expérience produit et transformation de grands groupes
+- Converteo, Wavestone, Sia Partners — blogs et publications : cabinets, doctrine produit et IA (à lire comme concurrents)
+### IA, transformation, DSI
+- Le Monde Informatique — lemondeinformatique.fr : DSI, budgets, projets IA
+- IT for Business — itforbusiness.fr : DSI, études, budgets
+- CIO Online — cio-online.com : DSI, gouvernance, portefeuille
+- L'Usine Digitale — usine-digitale.fr : IA et industrie, annonces et usages
+- Journal du Net — journaldunet.com : IA, data, e-commerce, retours d'expérience
+- Siècle Digital — siecledigital.fr : actualité numérique et IA
+- France Travail, Insee, Dares, Cigref — publications et baromètres : emploi, compétences, usages de l'IA, budgets IT
+- Institut Montaigne, Terra Nova (La Grande Conversation), Fondation Jean-Jaurès — notes : IA, travail, État
+### Investissement et écosystème
+- Maddyness — maddyness.com : levées françaises, écosystème
+- Les Echos, Les Echos Start — lesechos.fr : levées, stratégie des entreprises (souvent payant)
+- FrenchWeb — frenchweb.fr : levées et décryptages
+- BPI France Le Lab, France Digitale — études : financement, startups, baromètres

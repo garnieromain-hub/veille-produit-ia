@@ -85,6 +85,13 @@ main.layout {
 .chip .n { font-family: var(--f-data); color: var(--muted); font-size: 0.75rem; }
 .chip:disabled { opacity: 0.45; cursor: default; }
 .count { font-size: 0.8rem; color: var(--muted); }
+ul.items li.groupe {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
+  padding-block: 8px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: 16px;
+  background: var(--bg); border-bottom: 1px solid var(--line);
+  font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent);
+}
+ul.items li.groupe .n { font-family: var(--f-data); font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--muted); }
 .lang { font-family: var(--f-data); font-size: 0.7rem; color: var(--muted); border: 1px solid var(--line); border-radius: 3px; padding: 0 4px; letter-spacing: 0.04em; }
 
 ul.items { list-style: none; margin: 0; padding: 0; }
@@ -252,11 +259,19 @@ ul.items li { border-bottom: 1px solid var(--line); }
     var cur = location.hash.slice(1);
     $("count").textContent = items.length + " sur " + pool().length + (st.tab === "derniere" ? " · veille du " + fmt(D.derniereVeille) : "");
     if (!items.length) { $("list").innerHTML = '<li class="none">Aucun résultat avec ces filtres.</li>'; return; }
+    var groupe = null;
     $("list").innerHTML = items.map(function (x) {
+      // Historique : un intertitre par date de veille (les articles sont déjà triés par cette date)
+      var entete = "";
+      if (st.tab === "historique" && x.quand !== groupe) {
+        groupe = x.quand;
+        var nb = items.filter(function (y) { return y.quand === groupe; }).length;
+        entete = '<li class="groupe"><span>Veille du ' + fmt(groupe) + '</span><span class="n">' + nb + (nb > 1 ? " articles" : " article") + "</span></li>";
+      }
       var sub = st.tab === "notes"
         ? '<span class="date">' + fmt(x.date) + "</span>"
         : axeTag(x.axe) + '<span class="src">' + esc(x.auteur) + "</span>" + '<span class="date">' + fmt(x.publie) + "</span>" + langTag(x.langue) + (x.fiche ? "" : '<span class="nofiche">sans fiche</span>');
-      return '<li><button class="item' + (x.fiche === false ? " lien" : "") + '" data-id="' + esc(x.id) + '"' + (x.id === cur ? ' aria-current="true"' : "") + '><span class="t">' + esc(x.titre) + '</span><span class="s">' + sub + "</span></button></li>";
+      return entete + '<li><button class="item' + (x.fiche === false ? " lien" : "") + '" data-id="' + esc(x.id) + '"' + (x.id === cur ? ' aria-current="true"' : "") + '><span class="t">' + esc(x.titre) + '</span><span class="s">' + sub + "</span></button></li>";
     }).join("");
   }
 
