@@ -23,7 +23,7 @@ description: Analyse une source (article, étude, billet, vidéo, rapport) et en
    sert à repérer les doublons. Sans lien public, le noter explicitement.
 6. Écrire la fiche dans `sources/AAAA-MM-JJ-slug.md` (date du jour d'analyse).
 7. Ajouter une ligne en haut du tableau de `liste-articles.md`, au même format
-   que les lignes existantes (sauf si c'est l'agent `veilleur` qui s'en charge).
+   que les lignes existantes, avec la langue de la source (Français ou Anglais) (sauf si c'est l'agent `veilleur` qui s'en charge).
 
 ## Grille
 

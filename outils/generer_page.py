@@ -41,8 +41,16 @@ def tableaux(texte):
             sections[courante] = []
         elif courante and ligne.startswith("| ") and not ligne.startswith("|---"):
             sections[courante].append(ligne)
-    # on retire la ligne d'en-tête de chaque tableau
-    return {k: v[1:] for k, v in sections.items()}
+    # chaque ligne devient un dictionnaire indexé par les noms de colonnes de l'en-tête,
+    # pour que l'ajout ou le déplacement d'une colonne ne casse rien
+    resultat = {}
+    for nom, lignes in sections.items():
+        if not lignes:
+            resultat[nom] = []
+            continue
+        entete = cellules(lignes[0])
+        resultat[nom] = [dict(zip(entete, cellules(l))) for l in lignes[1:]]
+    return resultat
 
 
 def titre_md(md, defaut):
@@ -70,42 +78,40 @@ def main():
     secs = tableaux(texte)
 
     articles = []
-    for ligne in secs.get("Articles fichés", []):
-        c = cellules(ligne)
-        if len(c) < 8:
+    for c in secs.get("Articles fichés", []):
+        titre, chemin = lien(c.get("Fiche", ""))
+        if not chemin:
             continue
-        titre, chemin = lien(c[1])
-        _, url = lien(c[7])
-        principal, secondaire = axes(c[2])
+        _, url = lien(c.get("Source", ""))
+        principal, secondaire = axes(c.get("Axe", ""))
         fichier = RACINE / chemin
         if not fichier.exists():
             print(f"Fiche introuvable, ignorée : {chemin}")
             continue
         articles.append({
             "id": fichier.stem,
-            "analyse": c[0],
+            "analyse": c.get("Analysée le", ""),
             "titre": titre,
             "axe": principal,
             "axe2": secondaire,
-            "auteur": c[3],
-            "publie": c[4],
-            "maturite": c[5],
-            "motscles": [k.strip() for k in c[6].split(",") if k.strip()],
+            "langue": c.get("Langue", ""),
+            "auteur": c.get("Auteur, média", ""),
+            "publie": c.get("Publiée le", ""),
+            "maturite": c.get("Maturité", ""),
+            "motscles": [k.strip() for k in c.get("Mots-clés", "").split(",") if k.strip()],
             "url": url,
             "md": sans_titre(fichier.read_text(encoding="utf-8")),
         })
 
     complementaires = []
-    for ligne in secs.get("Sources complémentaires", []):
-        c = cellules(ligne)
-        if len(c) < 7:
-            continue
-        _, url = lien(c[6])
-        titre, url_titre = lien(c[1])
-        principal, secondaire = axes(c[2])
+    for c in secs.get("Sources complémentaires", []):
+        _, url = lien(c.get("Source", ""))
+        titre, url_titre = lien(c.get("Titre", ""))
+        principal, secondaire = axes(c.get("Axe", ""))
         complementaires.append({
-            "veille": c[0], "titre": titre, "axe": principal, "axe2": secondaire,
-            "media": c[3], "publie": c[4], "apport": c[5], "url": url or url_titre,
+            "veille": c.get("Veille du", ""), "titre": titre, "axe": principal, "axe2": secondaire,
+            "langue": c.get("Langue", ""), "media": c.get("Média", ""), "publie": c.get("Publiée le", ""),
+            "apport": c.get("Ce qu'elle apporte", ""), "url": url or url_titre,
         })
 
     notes = []

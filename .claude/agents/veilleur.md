@@ -70,12 +70,12 @@ sans modifier la grille. Une source inaccessible est écartée et signalée.
 
 Après chaque fiche, ajoute une ligne en haut du tableau « Articles fichés » de
 `liste-articles.md` (juste sous l'en-tête), au même format que les lignes
-existantes : date d'analyse, titre lié à la fiche, axe, auteur et média, date
-de publication (AAAA-MM-JJ), maturité (Signal faible, Tendance émergente ou
+existantes : date d'analyse, titre lié à la fiche, axe, langue de la source (Français ou
+Anglais), auteur et média, date de publication (AAAA-MM-JJ), maturité (Signal faible, Tendance émergente ou
 Pratique établie), mots-clés de la fiche, lien vers la source.
 
 Ajoute ensuite les sources complémentaires en haut du tableau « Sources
-complémentaires » : date de la veille, titre, axe, média, date de publication,
+complémentaires » : date de la veille, titre, axe, langue (Français ou Anglais), média, date de publication,
 ce qu'elle apporte, lien. Si une source complémentaire est fichée plus tard,
 retire sa ligne de ce tableau.
 

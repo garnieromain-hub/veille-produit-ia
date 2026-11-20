@@ -85,6 +85,7 @@ main.layout {
 .chip .n { font-family: var(--f-data); color: var(--muted); font-size: 0.75rem; }
 .chip:disabled { opacity: 0.45; cursor: default; }
 .count { font-size: 0.8rem; color: var(--muted); }
+.lang { font-family: var(--f-data); font-size: 0.7rem; color: var(--muted); border: 1px solid var(--line); border-radius: 3px; padding: 0 4px; letter-spacing: 0.04em; }
 
 ul.items { list-style: none; margin: 0; padding: 0; }
 ul.items li { border-bottom: 1px solid var(--line); }
@@ -173,7 +174,7 @@ ul.items li { border-bottom: 1px solid var(--line); }
     <div class="filters" id="filters">
       <input type="search" id="q" placeholder="Chercher un titre, un auteur, un mot-clé" aria-label="Recherche">
       <div class="chips" id="axes" aria-label="Filtrer par axe"></div>
-      <div class="chips" id="mats" aria-label="Filtrer par maturité"></div>
+      <div class="chips" id="langs" aria-label="Filtrer par langue"></div>
       <div class="count" id="count"></div>
     </div>
     <ul class="items" id="list"></ul>
@@ -194,8 +195,9 @@ ul.items li { border-bottom: 1px solid var(--line); }
     { nom: "Investissement tech", c: "--ax-in" }
   ];
   var MATS = ["Signal faible", "Tendance émergente", "Pratique établie"];
-  var st = { tab: "articles", axes: new Set(), mats: new Set(), q: "" };
-  try { var saved = JSON.parse(localStorage.getItem("veille-filtres") || "null"); if (saved) { st.axes = new Set(saved.axes || []); st.mats = new Set(saved.mats || []); } } catch (e) {}
+  var LANGS = ["Français", "Anglais"];
+  var st = { tab: "articles", axes: new Set(), langs: new Set(), q: "" };
+  try { var saved = JSON.parse(localStorage.getItem("veille-filtres") || "null"); if (saved) { st.axes = new Set(saved.axes || []); st.langs = new Set(saved.langs || []); } } catch (e) {}
 
   var $ = function (id) { return document.getElementById(id); };
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (ch) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]; }); }
@@ -206,12 +208,13 @@ ul.items li { border-bottom: 1px solid var(--line); }
     var bars = [0, 1, 2].map(function (k) { return '<span class="' + (k <= i ? "on" : "") + '"></span>'; }).join("");
     return '<span class="mat" title="Maturité"><i aria-hidden="true">' + bars + "</i>" + esc(m) + "</span>";
   }
+  function langTag(l) { return l ? '<span class="lang" title="' + esc(l) + '">' + (l === "Français" ? "FR" : "EN") + "</span>" : ""; }
   function fmt(d) {
     var m = /^(\d{4})-(\d{2})(?:-(\d{2}))?/.exec(d || ""); if (!m) return esc(d || "");
     var mois = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."][+m[2] - 1];
     return (m[3] ? +m[3] + " " : "") + mois + " " + m[1];
   }
-  function save() { try { localStorage.setItem("veille-filtres", JSON.stringify({ axes: Array.from(st.axes), mats: Array.from(st.mats) })); } catch (e) {} }
+  function save() { try { localStorage.setItem("veille-filtres", JSON.stringify({ axes: Array.from(st.axes), langs: Array.from(st.langs) })); } catch (e) {} }
 
   $("derniere").textContent = fmt(D.derniereVeille);
   $("n-articles").textContent = D.articles.length;
@@ -220,7 +223,7 @@ ul.items li { border-bottom: 1px solid var(--line); }
 
   function pool() { return st.tab === "complementaires" ? D.complementaires : st.tab === "notes" ? D.notes : D.articles; }
   function matchAxe(x) { return !st.axes.size || st.axes.has(x.axe) || st.axes.has(x.axe2); }
-  function matchMat(x) { return st.tab !== "articles" || !st.mats.size || st.mats.has(x.maturite); }
+  function matchLang(x) { return st.tab === "notes" || !st.langs.size || st.langs.has(x.langue); }
   function matchQ(x) {
     if (!st.q) return true;
     var hay = [x.titre, x.auteur, x.media, x.apport, (x.motscles || []).join(" "), st.tab === "notes" ? x.md : ""].join(" ").toLowerCase();
@@ -230,27 +233,27 @@ ul.items li { border-bottom: 1px solid var(--line); }
   function renderFilters() {
     var p = pool();
     var showAxes = st.tab !== "notes";
-    $("axes").hidden = !showAxes; $("mats").hidden = st.tab !== "articles";
+    $("axes").hidden = !showAxes; $("langs").hidden = st.tab === "notes";
     $("axes").innerHTML = AXES.map(function (a) {
-      var n = p.filter(function (x) { return (x.axe === a.nom || x.axe2 === a.nom) && matchMat(x) && matchQ(x); }).length;
+      var n = p.filter(function (x) { return (x.axe === a.nom || x.axe2 === a.nom) && matchLang(x) && matchQ(x); }).length;
       var on = st.axes.has(a.nom);
       return '<button class="chip" data-axe="' + esc(a.nom) + '" aria-pressed="' + on + '" style="--c:var(' + a.c + ')"' + (n || on ? "" : " disabled") + '><span class="dot"></span>' + esc(a.nom) + ' <span class="n">' + n + "</span></button>";
     }).join("");
-    $("mats").innerHTML = MATS.map(function (m) {
-      var n = p.filter(function (x) { return x.maturite === m && matchAxe(x) && matchQ(x); }).length;
-      var on = st.mats.has(m);
-      return '<button class="chip" data-mat="' + esc(m) + '" aria-pressed="' + on + '"' + (n || on ? "" : " disabled") + ">" + matTag(m) + ' <span class="n">' + n + "</span></button>";
+    $("langs").innerHTML = LANGS.map(function (l) {
+      var n = p.filter(function (x) { return x.langue === l && matchAxe(x) && matchQ(x); }).length;
+      var on = st.langs.has(l);
+      return '<button class="chip" data-lang="' + esc(l) + '" aria-pressed="' + on + '"' + (n || on ? "" : " disabled") + ">" + esc(l) + ' <span class="n">' + n + "</span></button>";
     }).join("");
   }
 
   function renderList() {
-    var items = pool().filter(function (x) { return matchAxe(x) && matchMat(x) && matchQ(x); });
+    var items = pool().filter(function (x) { return matchAxe(x) && matchLang(x) && matchQ(x); });
     var cur = location.hash.slice(1);
     $("count").textContent = items.length + " sur " + pool().length;
     if (!items.length) { $("list").innerHTML = '<li class="none">Aucun résultat avec ces filtres.</li>'; return; }
     if (st.tab === "complementaires") {
       $("list").innerHTML = items.map(function (x) {
-        return '<li><div class="comp"><div class="row">' + axeTag(x.axe) + (x.axe2 ? axeTag(x.axe2, true) : "") + '<span class="date">' + fmt(x.publie) + "</span></div>" +
+        return '<li><div class="comp"><div class="row">' + axeTag(x.axe) + (x.axe2 ? axeTag(x.axe2, true) : "") + langTag(x.langue) + '<span class="date">' + fmt(x.publie) + "</span></div>" +
           '<a class="t" href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.titre) + " ↗</a>" +
           '<span class="s date">' + esc(x.media) + " · repérée lors de la veille du " + fmt(x.veille) + "</span>" +
           "<p>" + esc(x.apport) + "</p></div></li>";
@@ -260,7 +263,7 @@ ul.items li { border-bottom: 1px solid var(--line); }
     $("list").innerHTML = items.map(function (x) {
       var sub = st.tab === "notes"
         ? '<span class="date">' + fmt(x.date) + "</span>"
-        : '<div class="row">' + axeTag(x.axe) + matTag(x.maturite) + "</div>" + '<span class="s">' + esc(x.auteur) + ' · <span class="date">' + fmt(x.publie) + "</span></span>";
+        : '<div class="row">' + axeTag(x.axe) + matTag(x.maturite) + langTag(x.langue) + "</div>" + '<span class="s">' + esc(x.auteur) + ' · <span class="date">' + fmt(x.publie) + "</span></span>";
       return '<li><button class="item" data-id="' + esc(x.id) + '"' + (x.id === cur ? ' aria-current="true"' : "") + '><span class="t">' + esc(x.titre) + "</span>" + sub + "</button></li>";
     }).join("");
   }
@@ -323,7 +326,7 @@ ul.items li { border-bottom: 1px solid var(--line); }
   document.querySelector("nav.tabs").addEventListener("click", function (e) { var b = e.target.closest("button[data-tab]"); if (b) setTab(b.dataset.tab); });
   $("filters").addEventListener("click", function (e) {
     var b = e.target.closest("button.chip"); if (!b || b.disabled) return;
-    var set = b.dataset.axe ? st.axes : st.mats, v = b.dataset.axe || b.dataset.mat;
+    var set = b.dataset.axe ? st.axes : st.langs, v = b.dataset.axe || b.dataset.lang;
     set.has(v) ? set.delete(v) : set.add(v); save(); renderFilters(); renderList();
   });
   $("q").addEventListener("input", function (e) { st.q = e.target.value.trim(); renderFilters(); renderList(); });
