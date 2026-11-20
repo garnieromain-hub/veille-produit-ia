@@ -50,8 +50,8 @@ thème : si oui, complète-la plutôt que d'en créer une nouvelle.
      une phrase qui dit ce qu'elle apporte.
    Une veille sur tous les thèmes couvre au moins trois axes ; si un axe n'a
    rien de notable dans la période, le dire dans la note.
-   - **Veille quotidienne** : voir la section « Veille quotidienne » (20
-     articles, tous fichés, trois quarts en français).
+   - **Veille quotidienne** : le volume et la répartition des langues sont
+     fixés dans la section « Veille quotidienne », temps 1.
 4. Écarter celles déjà fichées : chercher leur lien dans `liste-articles.md`
    puis dans `sources/`.
 5. Équilibrer la sélection. Elle doit contenir au moins :
@@ -147,6 +147,10 @@ découpe le travail. Tu interviens deux fois, et des agents `ficheur` rédigent
 les fiches entre les deux.
 
 ### Temps 1 : « sélection »
+Cette section est la seule référence pour le volume quotidien et la
+répartition des langues : la routine cloud, `CLAUDE.md` et
+`sources-de-reference.md` y renvoient sans répéter les chiffres.
+
 Applique la section 2 (trouver les sources) avec ces règles, et **n'écris aucun
 fichier** :
 - **20 articles**, tous destinés à recevoir une fiche (pas de sources

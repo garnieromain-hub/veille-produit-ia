@@ -49,8 +49,9 @@ mais un axe absent plusieurs semaines de suite mérite une recherche ciblée.
 - Veille automatique quotidienne : une routine cloud la lance du lundi au
   vendredi à 7h (heure de Paris l'hiver, 8h l'été), même Mac éteint, et pousse
   les résultats sur GitHub (`garnieromain-hub/veille-produit-ia`, branche `main`).
-  Chaque jour : 20 articles, tous fichés, trois quarts en français. Le lundi
-  couvre le week-end.
+  Le lundi couvre le week-end. Le volume quotidien et la répartition des
+  langues sont fixés dans `.claude/agents/veilleur.md`, section « Veille
+  quotidienne » : c'est là qu'on les change.
 - Organisation de la veille quotidienne : l'agent `veilleur` sélectionne les
   articles, quatre agents `ficheur` rédigent les fiches en parallèle, puis le
   `veilleur` écrit une note courte du jour.

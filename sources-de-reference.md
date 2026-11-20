@@ -71,8 +71,9 @@ Les sources marquées (EN) sont en anglais : les fiches restent en français.
 - CB Insights — cbinsights.com (EN) : rapports, souvent partiellement payants
 
 ## Sources en français
-La veille quotidienne vise trois quarts d'articles en français : chercher ici en
-priorité, puis par recherche libre en français.
+La veille quotidienne vise une majorité d'articles en français (proportion fixée
+dans `.claude/agents/veilleur.md`, section « Veille quotidienne ») : chercher
+ici en priorité, puis par recherche libre en français.
 ### Produit, design, organisation
 - Blog OCTO — blog.octo.com : produit, IA, organisation (maison)
 - Thiga — thiga.co/blog : product management, design, transformation produit
