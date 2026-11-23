@@ -1,5 +1,8 @@
 # Publie la page de la veille sur GitHub Pages à chaque modification de main
-# (veille du lundi par la routine cloud, ou fiche ajoutée à la main).
+# (veille quotidienne par la routine cloud, ou fiche ajoutée à la main).
+# Deux jobs séparés (construction puis déploiement), comme le modèle officiel
+# de GitHub : le déploiement ne démarre qu'une fois l'archive de la page bien
+# enregistrée, ce qui évite l'erreur « No artifacts named github-pages ».
 name: Publier la page de la veille
 
 on:
@@ -14,14 +17,11 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
-  publier:
+  construire:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploiement.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -33,5 +33,18 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: page/site
-      - id: deploiement
+
+  publier:
+    needs: construire
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - name: Déployer sur GitHub Pages
+        id: deploiement
+        uses: actions/deploy-pages@v4
+      - name: Nouvel essai si GitHub n'a pas répondu
+        if: failure()
+        id: deploiement2
         uses: actions/deploy-pages@v4
