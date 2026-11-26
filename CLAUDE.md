@@ -42,6 +42,9 @@ mais un axe absent plusieurs semaines de suite mérite une recherche ciblée.
   `notes/` par `outils/generer_page.py`, publiée sur GitHub Pages (voir « Page web »).
 - `sources/` : une fiche par source analysée, nommée `AAAA-MM-JJ-slug.md`.
 - `notes/` : notes de veille compilées, nommées `AAAA-MM-JJ-theme.md`.
+- `rd/backlog.md` : backlog de mon sujet de R&D OCTO (sujet principal, épopées,
+  sujets candidats, questions ouvertes, journal). Quand on travaille sur la R&D,
+  partir de ce fichier et le tenir à jour (statuts, journal, date de mise à jour).
 
 ## Veille
 - Toute demande de veille (un thème, une période, la veille hebdo) est confiée
@@ -88,6 +91,25 @@ existante.
 - Ne pas modifier les fichiers de `page/` à la main : changer `outils/gabarit-page.html`.
 - L'ancienne page claude.ai (https://claude.ai/artifact/WhGdkNsbncWQyvsUb5Jw6g)
   n'est plus mise à jour.
+
+## Noms de personnes et confidentialité
+Le dépôt est public. Avant tout commit d'un contenu qui n'est pas une fiche
+de veille (backlog R&D, journal, notes de travail, pitch…) :
+- repérer les noms de personnes (collègues OCTO, clients, contacts) ;
+- par défaut, les retirer, ou me demander s'il faut les garder. Ne jamais les
+  pousser sans mon accord explicite pour ce nom-là.
+- Les auteurs publics cités dans les fiches de veille (Cagan, Torres,
+  journalistes, auteurs des articles) restent : ils font partie de la source.
+  En revanche, dans `rd/` et les notes de travail, un collègue OCTO n'est pas
+  nommé, même s'il est l'auteur d'un article public : on désigne son travail
+  par son sujet.
+
+## Rien en local
+Je ne veux rien garder en local : tout ce qui est produit doit finir sur
+GitHub (après le contrôle des noms ci-dessus). Ne jamais laisser un commit non
+poussé ou un fichier hors git à la fin d'une session. Le dossier local n'est
+qu'une copie de travail que je peux supprimer à tout moment ; je travaille de
+préférence dans des sessions cloud sur le dépôt.
 
 ## Principes
 - Une source déjà analysée (même lien) n'est pas refichée : on la réutilise.
