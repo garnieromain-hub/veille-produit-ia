@@ -81,6 +81,7 @@ ici en priorité, puis par recherche libre en français.
 - Welcome to the Jungle, Welcome Tech — welcometothejungle.com : métiers produit et tech, emploi
 - Le Ticket — le-ticket.fr : retours d'expérience produit et transformation de grands groupes
 - Converteo, Wavestone, Sia Partners — blogs et publications : cabinets, doctrine produit et IA (à lire comme concurrents)
+- onepoint, Sopra Steria Next (CIO Compass), Capgemini Invent — publications : cabinets, gouvernance agentique et modèle opérationnel (à lire comme concurrents)
 ### IA, transformation, DSI
 - Le Monde Informatique — lemondeinformatique.fr : DSI, budgets, projets IA
 - IT for Business — itforbusiness.fr : DSI, études, budgets

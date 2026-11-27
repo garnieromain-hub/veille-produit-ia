@@ -4,7 +4,7 @@ Sujet de R&D mené hors mission : un sujet stratégique pour OCTO, en lien fort
 avec l'expertise produit, qui produit des artefacts rapidement et se pitche pour
 constituer une équipe.
 
-**Dernière mise à jour** : 2026-11-26
+**Dernière mise à jour** : 2026-11-27
 
 ## Mode d'emploi
 - Chaque élément a un identifiant (`AP-12`, `SC-B`…), un statut et, si besoin,
@@ -52,6 +52,45 @@ et on outille ça. »
 - Un atelier joué au moins une fois en interne.
 - Un article OCTO publié et un pitch qui a convaincu au moins 2 personnes.
 
+### Paysage concurrentiel (relevé du 2026-11-27)
+Recherche sur ce que publient les cabinets concurrents sur les agents, leur
+gouvernance et le lien avec le produit. Sources : pages publiques des cabinets
+(communiqués, blogs, annonces de recrutement), donc leur propre discours.
+
+| Acteur | Ce qu'il fait sur le sujet | Angle | Recouvrement avec notre sujet |
+|---|---|---|---|
+| Thiga | Développe une offre « AI Product Ops / POM-AI » : refondre le cycle de développement produit avec l'IA, concevoir des équipes mixtes humains-agents (rôles, points de contrôle), construire de petits agents et mesurer leur impact ([annonce](https://jobs.lever.co/thiga/46434f51-1483-4100-b256-3f1fef577611)). Recrute des « AI Product Builder » et dit monter une équipe pour réinventer le product management ([annonce](https://jobs.lever.co/thiga/b9986cb5-e1e9-48ad-aac6-98c4ae782076)). | L'IA dans l'équipe produit | **Le plus proche** : même communauté, même discours produit. Mais leur objet est l'équipe produit outillée par l'IA, pas l'agent piloté comme un produit. |
+| Converteo | Doctrine « product builder », rôles « Agentic Champions » et « Builders », cas en production (Lacoste, Fnac Darty), modèle opérationnel agentique ([article](https://converteo.com/en/blog/agentic-ai-project-enterprise/)). Mesure le ROI d'un agent par son taux d'adoption. | Construire et passer à l'échelle | Partiel : pas de propriétaire par agent, pas de coût unitaire, pas de critère d'arrêt. |
+| Sopra Steria Next | CIO Compass d'octobre 2026 : « moins de 20 % des décisions automatisées ont un propriétaire métier identifié », moins de 25 % sont traçables de bout en bout ; cadre à neuf dimensions et « pile de souveraineté » à cinq couches (qui opère, qui peut remplacer, qui répond) ([communiqué](https://www.webdisclosure.com/press-release/ai-fewer-than-20-of-automated-decisions-have-an-identified-owner-szzCnmXYA8d)). Méthodologie non publiée. | Gouvernance des décisions, souveraineté, côté DSI | Fort sur la propriété et la réversibilité, mais vu de la DSI et de la conformité, pas du produit. |
+| Capgemini Invent | Rapport avec UCL sur un modèle opérationnel « produit » pour des équipes humains-agents ([rapport](https://www.mgmt.ucl.ac.uk/sites/default/files/upload/Analytics%20Lab%202026%20.pdf)) ; fiche « Agentic Governance » sur le cycle de vie des agents et le retrait des moins performants ([PDF](https://www.capgemini.com/wp-content/uploads/2026/08/Agentic-Governance-One-Pager-2026_Final.pdf), non lisible en entier). | Usine à agents, grands comptes | Recouvre le cycle de vie et le retrait ; approche industrielle, peu outillée côté produit. |
+| Wavestone | Benchmark cyber IA 2026 (88 % ont une gouvernance IA, 8 % intègrent les journaux IA à la supervision de sécurité), typologie des risques agentiques ([site](https://www.wavestone.com/en/), [RiskInsight](https://www.riskinsight-wavestone.com/en/?p=29128)). | Risque, cyber, conformité | Faible : complémentaire. |
+| onepoint | Objectif interne : 100 % des collaborateurs « AI and agentic-ready » en 2026 ; démonstrations agentiques ([page IA](https://www.groupeonepoint.com/?p=13105748)). Pas d'offre publique repérée sur la gouvernance produit des agents. | Formation interne, data et cloud | Faible à ce stade. |
+
+**Outils existants à connaître** : l'« AI Agent Canvas » d'Agentic Academy
+(Boomi, mai 2026), neuf blocs en trois bandes : finalité, capacités,
+contraintes ([page](https://agentic-academy.ai/posts/ai-agent-canvas/)) ; le
+« Canvas Framework » de MongoDB (preuve de concept puis production)
+([article](https://medium.com/mongodb/build-ai-agents-worth-keeping-the-canvas-framework-b582c40db00a)).
+Ils couvrent la conception d'un agent, pas son pilotage économique : pas de coût
+par tâche, pas de valeur ni de ROI, critère d'arrêt seulement partiel, rien sur
+la réversibilité (changer de fournisseur), aucune vue de portefeuille.
+
+**Ce que ça change pour nous**
+- **Un canvas seul n'est pas un différenciant** : il en existe déjà. Notre
+  apport est le **pilotage économique et le cycle de vie** de l'agent (coût par
+  tâche réussie, valeur, critère d'arrêt, réversibilité) et la **vue
+  portefeuille** (garder, améliorer, arrêter), avec le vocabulaire et les rites
+  du produit.
+- **Place libre** : personne ne relie la propriété des agents (sujet DSI chez
+  Sopra Steria Next, Capgemini) à la culture produit (sujet de Thiga et
+  Converteo). C'est notre pont.
+- **Thiga est le concurrent direct** sur la communauté produit : se distinguer
+  par l'objet (l'agent comme produit, pas l'équipe augmentée) et par la preuve
+  (cas réels mesurés, à commencer par la veille).
+- **Chiffre d'appel utile** : « moins de 20 % des décisions automatisées ont un
+  propriétaire identifié » (Sopra Steria Next), à citer avec sa limite
+  (méthodologie non publiée), à côté du 23 % de Deloitte.
+
 ### Épopée 1 : le canvas de l'agent produit
 | ID | Élément | Statut | Priorité |
 |---|---|---|---|
@@ -62,6 +101,7 @@ et on outille ça. »
 | AP-05 | Définir les evals de la veille : chiffres faux repérés, sources inaccessibles, fiches réutilisées | à faire | P1 |
 | AP-06 | Tester le canvas sur 2 ou 3 agents d'OCTO ou de clients | à faire | P1 |
 | AP-07 | Canvas v1 après les tests | à faire | P1 |
+| AP-08 | Situer le canvas par rapport à l'AI Agent Canvas et au Canvas Framework de MongoDB : reprendre ce qui existe (finalité, garde-fous, escalade), ajouter ce qui manque (coût par tâche réussie, valeur, critère d'arrêt, réversibilité) | à faire | P1 |
 
 ### Épopée 2 : la revue de portefeuille d'agents
 | ID | Élément | Statut | Priorité |
@@ -69,6 +109,7 @@ et on outille ça. »
 | AP-10 | Grille garder / améliorer / arrêter pour un portefeuille d'agents | à faire | P1 |
 | AP-11 | Critères d'arrêt types, à partir des cas de la veille (Zefir, Uber, T-Mobile) | à faire | P1 |
 | AP-12 | Test de réversibilité : comment changer de modèle ou de fournisseur pour un agent donné | à faire | P2 |
+| AP-13 | Reprendre les trois questions de la « pile de souveraineté » de Sopra Steria Next (qui opère, qui peut remplacer, qui répond) et les traduire en rubriques produit | à faire | P2 |
 
 ### Épopée 3 : l'atelier
 | ID | Élément | Statut | Priorité |
@@ -91,6 +132,8 @@ et on outille ça. »
 | AP-40 | Pitch de 5 minutes | à faire | P1 |
 | AP-41 | Identifier les profils : ingénierie agentique, PO en mission sur un projet agentique, FinOps | à faire | P1 |
 | AP-42 | Rituel de l'équipe (fréquence, format, outils partagés) | à faire | P2 |
+| AP-43 | Intégrer le positionnement face aux concurrents dans le pitch (l'agent comme produit, pas l'équipe augmentée ; pilotage économique et portefeuille) | à faire | P1 |
+| AP-44 | Suivre les publications des cabinets concurrents sur le sujet dans la veille (Thiga, Converteo, Sopra Steria Next, Capgemini Invent, Wavestone, onepoint) | à faire | P2 |
 
 ### Épopée 6 : monter en compétence avec l'IA
 | ID | Élément | Statut | Priorité |
@@ -161,6 +204,8 @@ et on outille ça. »
 | Q-2 | Combien d'heures par semaine hors mission ? Ajuster le plan de 8 semaines | ouverte |
 | Q-3 | Qui solliciter en premier pour l'équipe ? | ouverte |
 | Q-4 | Le backlog et le journal doivent-ils rester privés ? (le dépôt GitHub est public) | tranchée : publics, sans noms de personnes sauf accord explicite |
+| Q-5 | Le terrain des équipes mixtes humains-agents est occupé par Thiga : le laisser de côté, ou l'aborder sous l'angle de l'agent comme membre d'un portefeuille ? | ouverte |
+| Q-6 | Un canvas existe déjà (AI Agent Canvas) : créer le nôtre, ou proposer une extension « pilotage et portefeuille » de l'existant ? | ouverte |
 
 ---
 
@@ -170,3 +215,9 @@ et on outille ça. »
   l'heure du code gratuit). Cinq sujets plus centrés produit identifiés
   (SC-A à SC-E), à creuser. Création de ce backlog. Décision : le backlog est
   public (dépôt GitHub), sans noms de collègues ni de clients sauf accord.
+- **2026-11-27** : confrontation du sujet aux concurrents (Thiga, Converteo,
+  Sopra Steria Next, Capgemini Invent, Wavestone, onepoint) et aux canvas
+  existants. Conclusion : le canvas seul n'est pas différenciant ; l'apport porte
+  sur le pilotage économique, le cycle de vie et la vue portefeuille, en reliant
+  la gouvernance (sujet DSI) à la culture produit. Ajout de AP-08, AP-13, AP-43,
+  AP-44, Q-5 et Q-6.
